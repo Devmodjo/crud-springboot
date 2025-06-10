@@ -9,6 +9,7 @@ public interface ProduitService {
     ProduitModel saveProduct(ProduitModel produitModel);
     List<ProduitModel> getAllProduct();
     Optional<ProduitModel> getProduct(Integer id);
-    ProduitModel deleteProduct(ProduitModel produitModel);
+    void deleteProductById(Integer id);
+    void deleteAllProduct(ProduitModel produitModel);
     ProduitModel updateProduct(ProduitModel produitModel);
 }

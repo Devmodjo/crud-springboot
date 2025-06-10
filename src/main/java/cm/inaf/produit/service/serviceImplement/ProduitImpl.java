@@ -35,12 +35,17 @@ public class ProduitImpl implements ProduitService {
     }
 
     @Override
-    public ProduitModel deleteProduct(ProduitModel produitModel) {
-        return null;
+    public void deleteProductById(Integer id) {
+        produitRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllProduct(ProduitModel produitModel) {
+        produitRepository.delete(produitModel);
     }
 
     @Override
     public ProduitModel updateProduct(ProduitModel produitModel) {
-        return null;
+        return produitRepository.save(produitModel);
     }
 }
