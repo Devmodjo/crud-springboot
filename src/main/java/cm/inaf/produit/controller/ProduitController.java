@@ -5,13 +5,11 @@ import cm.inaf.produit.exception.ResourceNotFoundException;
 import cm.inaf.produit.model.ProduitModel;
 import cm.inaf.produit.service.ProduitService;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Data
@@ -20,8 +18,11 @@ import java.util.Optional;
 @CrossOrigin("http://localhost:5173")
 public class ProduitController {
 
-    @Autowired
-    private ProduitService produitService;
+    private final ProduitService produitService;
+
+    public ProduitController(ProduitService produitService) {
+        this.produitService = produitService;
+    }
 
     @PostMapping("/save")
     public ProduitModel createProduct(@RequestBody ProduitModel produitModel){
@@ -30,40 +31,28 @@ public class ProduitController {
 
     @GetMapping("/get")
     public List<ProduitModel> getAllProduct(){
-        return  produitService.getAllProduct();
+        return produitService.getAllProduct();
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ProduitModel> getProductById(@PathVariable Integer id){
-        ProduitModel produitModel = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(
-                () -> new ResourceNotFoundException("Ce produit n'existe pas")
-        );
+        ProduitModel produitModel = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
         return  ResponseEntity.ok(produitModel);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProduitModel> updateProduct(@PathVariable Integer id, @RequestBody ProduitModel produitModel){
-        ProduitModel pm = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(
-                ()->new ResourceNotFoundException("Ce produit n'existe pas")
-        );
-        pm.setProductName(produitModel.getProductName());
-        pm.setDescription(produitModel.getDescription());
-        pm.setPrice(produitModel.getPrice());
-
+        ProduitModel pm = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
         return ResponseEntity.ok(produitService.updateProduct(pm));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable Integer id){
-        ProduitModel produitModel = Optional.ofNullable(produitService.getProduct(id))
-                .orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas !"));
-
-        produitService.deleteAllProduct(produitModel);
-
-        Map<String, Boolean> reponse = new HashMap<>();
-        reponse.put("Deleted !", Boolean.TRUE);
-
-        return  ResponseEntity.ok(reponse);
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable Integer id){
+        Boolean p = this.produitService.deleteProductById(id);
+        if(p){
+            return ResponseEntity.status(HttpStatus.OK).body(p);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(p);
     }
 
 }

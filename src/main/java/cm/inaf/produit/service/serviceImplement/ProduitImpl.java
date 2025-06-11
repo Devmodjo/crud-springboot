@@ -5,17 +5,16 @@ import cm.inaf.produit.model.ProduitModel;
 import cm.inaf.produit.repository.ProduitRepository;
 import cm.inaf.produit.service.ProduitService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+
 @Transactional
 @Service
 public class ProduitImpl implements ProduitService {
 
-    @Autowired
     public final ProduitRepository produitRepository;
 
     public ProduitImpl(ProduitRepository produitRepository) {
@@ -40,14 +39,15 @@ public class ProduitImpl implements ProduitService {
     }
 
     @Override
-    public void deleteProductById(Integer id) {
-        produitRepository.deleteById(id);
-
+    public Boolean deleteProductById(int id) {
+        Optional<ProduitModel> foundProduct = produitRepository.findById(id);
+        if(foundProduct.isPresent()){
+            produitRepository.delete(foundProduct.get());
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public void deleteAllProduct(ProduitModel produitModel) {
-    }
 
     @Override
     public ProduitModel updateProduct(ProduitModel produitModel) {
