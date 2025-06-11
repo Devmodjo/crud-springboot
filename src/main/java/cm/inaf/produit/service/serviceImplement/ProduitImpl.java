@@ -1,9 +1,11 @@
 package cm.inaf.produit.service.serviceImplement;
 
+import cm.inaf.produit.exception.ResourceNotFoundException;
 import cm.inaf.produit.model.ProduitModel;
 import cm.inaf.produit.repository.ProduitRepository;
 import cm.inaf.produit.service.ProduitService;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
 @Service
 public class ProduitImpl implements ProduitService {
 
+    @Autowired
     public final ProduitRepository produitRepository;
 
     public ProduitImpl(ProduitRepository produitRepository) {
@@ -30,18 +33,20 @@ public class ProduitImpl implements ProduitService {
     }
 
     @Override
-    public Optional<ProduitModel> getProduct(Integer id) {
-        return produitRepository.findById(id);
+    public ProduitModel getProduct(Integer id) {
+        return produitRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("ce Produit n'exite pas !")
+        );
     }
 
     @Override
     public void deleteProductById(Integer id) {
         produitRepository.deleteById(id);
+
     }
 
     @Override
     public void deleteAllProduct(ProduitModel produitModel) {
-        produitRepository.delete(produitModel);
     }
 
     @Override
