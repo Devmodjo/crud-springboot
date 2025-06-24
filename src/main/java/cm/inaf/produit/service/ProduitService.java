@@ -1,14 +1,20 @@
 package cm.inaf.produit.service;
 
-import cm.inaf.produit.model.ProduitModel;
+import cm.inaf.produit.Dto.ProduitRequestDto;
+import cm.inaf.produit.Dto.ProduitResponseDto;
+
 
 import java.util.List;
 
 
 public interface ProduitService {
-    ProduitModel saveProduct(ProduitModel produitModel);
-    List<ProduitModel> getAllProduct();
-    ProduitModel getProduct(Integer id);
+    ProduitResponseDto saveProduct(ProduitRequestDto produitModelRequestDto);
+
+    List<ProduitResponseDto> getAllProduct();
+
+    ProduitResponseDto getProduct(Integer id);
+
     Boolean deleteProductById(int id);
-    ProduitModel updateProduct(ProduitModel produitModel);
+
+    ProduitResponseDto updateProduct(int id, ProduitRequestDto produitRequestDtoDto);
 }

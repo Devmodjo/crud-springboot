@@ -1,8 +1,9 @@
 package cm.inaf.produit.controller;
 
 
+import cm.inaf.produit.Dto.ProduitRequestDto;
+import cm.inaf.produit.Dto.ProduitResponseDto;
 import cm.inaf.produit.exception.ResourceNotFoundException;
-import cm.inaf.produit.model.ProduitModel;
 import cm.inaf.produit.service.ProduitService;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -25,25 +26,28 @@ public class ProduitController {
     }
 
     @PostMapping("/save")
-    public ProduitModel createProduct(@RequestBody ProduitModel produitModel){
-        return produitService.saveProduct(produitModel);
+    public ProduitResponseDto createProduct(@RequestBody ProduitRequestDto produitResquestDto){
+        return produitService.saveProduct(produitResquestDto);
     }
 
     @GetMapping("/get")
-    public List<ProduitModel> getAllProduct(){
-        return produitService.getAllProduct();
+    public ResponseEntity<List<ProduitResponseDto>> getAllProduct(){
+        return ResponseEntity.ok(produitService.getAllProduct());
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProduitModel> getProductById(@PathVariable Integer id){
-        ProduitModel produitModel = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
-        return  ResponseEntity.ok(produitModel);
+    public ResponseEntity<ProduitResponseDto> getProductById(@PathVariable Integer id){
+        ProduitResponseDto found = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
+        return  ResponseEntity.status(HttpStatus.OK).body(found);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProduitModel> updateProduct(@PathVariable Integer id, @RequestBody ProduitModel produitModel){
-        ProduitModel pm = Optional.ofNullable(produitService.getProduct(id)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
-        return ResponseEntity.ok(produitService.updateProduct(pm));
+    public ResponseEntity<ProduitResponseDto> updateProduct(@PathVariable Integer id, @RequestBody ProduitRequestDto produitModel){
+        ProduitResponseDto pm = Optional.ofNullable(produitService.updateProduct(id, produitModel)).orElseThrow(() -> new ResourceNotFoundException("Ce produit n'existe pas"));
+        if(pm != null){
+            return ResponseEntity.status(HttpStatus.OK).body(pm);
+        }
+        return  ResponseEntity.status(HttpStatus.OK).body(pm);
     }
 
     @DeleteMapping("/delete/{id}")

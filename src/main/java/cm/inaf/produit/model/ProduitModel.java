@@ -2,15 +2,11 @@ package cm.inaf.produit.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name= "produit")
-@AllArgsConstructor
-@NoArgsConstructor
 public class ProduitModel {
 
     @Id
@@ -32,11 +28,12 @@ public class ProduitModel {
     public ProduitModel() {
     }
 
-    public ProduitModel(LocalDate dateRegister, Double price, String description, String productName) {
-        this.dateRegister = dateRegister;
-        this.price = price;
-        this.description = description;
+    public ProduitModel(Integer id_, String productName, String description, Double price, LocalDate dateRegister) {
+        this.id_ = id_;
         this.productName = productName;
+        this.description = description;
+        this.price = price;
+        this.dateRegister = dateRegister;
     }
 
     public Integer getId_() {
